@@ -1,5 +1,34 @@
 const { parseStatementOutput } = require("../statementAnalysis/parseStatementOutput");
 
+const { getFunctionAccessLevel } = require("./functionUtils");
+const { getFunctionOutputType } = require("./functionUtils");
+const { getFunctionName } = require("./functionUtils");
+const { getFunctionInput } = require("./functionUtils");
+const { getFunctionContent } = require("./functionUtils");
+
+exports.parseFunction = function (classMethods, imports) {
+
+    var functions = {};
+    
+    classMethods.forEach(classMethod => {
+        var functionAccessLevel = getFunctionAccessLevel(classMethod);
+        var functionOutputType = getFunctionOutputType(classMethod, imports);
+        var functionName = getFunctionName(classMethod);
+        var functionInput = getFunctionInput(classMethod, imports);
+        var funContent = getFunctionContent(classMethod);
+        
+        functions[functionName] = {
+            functionAccessLevel,
+            functionName,
+            functionInput,
+            functionOutputType,
+            funContent
+        };
+    });
+
+    return functions;
+}
+
 // TODO: private function
 // TODO: stream
 // TODO: function in function

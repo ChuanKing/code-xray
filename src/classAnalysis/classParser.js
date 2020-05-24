@@ -2,10 +2,10 @@ const { getClassName } = require('./classUtil');
 const { getClassContent } = require('./classUtil');
 const { getClassFieldsMethods } = require('../classAnalysis/classUtil');
 
-const { parseFunction } = require('../functionAnalysis/funUtils');
-const { getFunctionDependencies } = require('../functionAnalysis/funContent');
+const { parseFunction } = require('../functionAnalysis/functionParser');
+const { getFunctionDependencies } = require('../functionAnalysis/functionParser');
 
-exports.classParser = function(package, imports, mainClass) {
+exports.parseClass = function(package, imports, mainClass) {
     
     var className = getClassName(mainClass);
     var classContent = getClassContent(mainClass);
