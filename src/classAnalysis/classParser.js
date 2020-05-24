@@ -5,7 +5,7 @@ const { getClassFieldsMethods } = require('../classAnalysis/classUtil');
 const { parseFunction } = require('../functionAnalysis/functionParser');
 const { postParseFunction } = require('../functionAnalysis/functionParser');
 
-exports.parseClass = function(package, imports, mainClass) {
+exports.parseClass = function(imports, mainClass) {
     
     var className = getClassName(mainClass);
     var classContent = getClassContent(mainClass);
@@ -17,8 +17,6 @@ exports.parseClass = function(package, imports, mainClass) {
     });
 
     functionsInfo = postParseFunction(functionsInfo);
-    
-    console.log(JSON.stringify(functionsInfo, null, 4));
 
     return {
         className,

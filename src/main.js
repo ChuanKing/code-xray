@@ -1,31 +1,33 @@
-var fs = require('fs');
+const fs = require('fs').promises;
 
-const { cleanComment } = require('./util/cleanUtil');
-const { cleanAnnotation } = require('./util/cleanUtil');
-const { cleanString } = require('./util/cleanUtil');
-const { log } = require('./util/util');
+const { includeFileTypes } = require('./config');
+const { excludeFiles } = require('./config');
+const { getFiles } = require('./util/fileUtil');
+const { parseFile } = require('./fileAnalysis/fileParser');
 
-const { parseFile: fileParser } = require('./fileAnalysis/fileParser');
-
-const inputRoot = '';
-const file = '';
-
-fs.readFile(`${inputRoot}/${file}`, 'utf8', function (err, data) {
-
-    if (err) {
-        log(err.message);
-        return;
-    }
-
-    data = cleanComment(data);
-    data = cleanAnnotation(data);
-    data = cleanString(data);
+const start = async function () {
     
-    var classInfo = fileParser(data);
+    const inputRoot = '/Volumes/Unix/workspace/MarketplaceLabelAccountingManagementService/src/MarketplaceLabelAccountingManagementService/src';
+    const files = await getFiles(inputRoot);
 
-});
+    files
+        .filter(file => {
+            var filename = file.split('/').pop();
+            var fileType = file.split('.').pop();
 
+            return includeFileTypes.includes(fileType) && 
+                   !excludeFiles.includes(filename)
+        })
+        .forEach(async file => {
+            try {
+                var data = await fs.readFile(file, 'utf8');
+                var classInfo = parseFile(data); 
 
+                console.log(classInfo);
+            } catch (error) {
+                console.log(`pasering ${file} fail with error: ${error}`);
+            }
+        });
+}
 
-
-
+start();
