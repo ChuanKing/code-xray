@@ -1,5 +1,7 @@
 #!/bin/bash
 
-node src/main.js
-sleep 5
 clear
+echo ------------------
+date +%Y-%m-%d/%H:%M:%S
+node src/main.js
+echo ------------------

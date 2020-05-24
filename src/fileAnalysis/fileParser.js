@@ -14,5 +14,9 @@ exports.parseFile = function (content) {
 
     var maniClassInfo = parseClass(package, imports, mainClass);
 
-    return maniClassInfo
+    return {
+        package,
+        imports,
+        maniClassInfo
+    }
 }
