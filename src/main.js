@@ -1,33 +1,40 @@
 const fs = require('fs').promises;
 
-const { includeFileTypes } = require('./config');
-const { excludeFiles } = require('./config');
 const { getFiles } = require('./util/fileUtil');
+const { filterProcessingFile } = require('./util/fileUtil');
+const { logObjectWithPrettyFormat } = require('./util/logUtil');
+const { logClassBreif } = require('./util/logUtil');
+
 const { parseFile } = require('./fileAnalysis/fileParser');
 
+const inputRoot = './resources';
+const outputRoot = './output';
+
 const start = async function () {
-    
-    const inputRoot = '/Volumes/Unix/workspace/MarketplaceLabelAccountingManagementService/src/MarketplaceLabelAccountingManagementService/src';
+
     const files = await getFiles(inputRoot);
 
     files
-        .filter(file => {
-            var filename = file.split('/').pop();
-            var fileType = file.split('.').pop();
+        .filter(filterProcessingFile)
+        .forEach(processFile);
+}
 
-            return includeFileTypes.includes(fileType) && 
-                   !excludeFiles.includes(filename)
-        })
-        .forEach(async file => {
-            try {
-                var data = await fs.readFile(file, 'utf8');
-                var classInfo = parseFile(data); 
+const processFile = async function (file) {
+    try {
+        var data = await fs.readFile(file, 'utf8');
+        var classInfo = parseFile(data); 
 
-                console.log(classInfo);
-            } catch (error) {
-                console.log(`pasering ${file} fail with error: ${error}`);
-            }
-        });
+        // logObjectWithPrettyFormat(classInfo);
+        // logClassBreif(classInfo, file);
+        
+        if (classInfo && classInfo.maniClassInfo && classInfo.maniClassInfo.className) {
+            var filename = `${classInfo.package.replace('com.amazon.marketplacelabelaccountingmanagementservice.', '')}.${classInfo.maniClassInfo.className}`
+            await fs.writeFile(`${outputRoot}/${filename}.json`, JSON.stringify(classInfo, null, 4));
+        }
+    } catch (error) {
+        console.log(`pasering ${file} fail with error: ${error}`);
+        console.log(error.stack);
+    }
 }
 
 start();

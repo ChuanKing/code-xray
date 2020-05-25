@@ -1,6 +1,6 @@
 const { excludeStatements } = require("../config.js");
 
-const { log } = require("../util/util");
+const { log } = require("../util/logUtil");
 const { jumpToEnd } = require("../util/util");
 
 exports.cleanStatement = function (statement) {
@@ -22,6 +22,8 @@ exports.isSupportStatement = function (statement) {
         statement.indexOf('while (') >= 0 ||
         statement.indexOf('if ') >= 0 ||
         statement.indexOf('if (') >= 0 ||
+        statement.indexOf('catch ') >= 0 ||
+        statement.indexOf('catch (') >= 0 ||
         statement.indexOf('(') == -1) {
         
         log(statement)
@@ -40,6 +42,9 @@ exports.isExcludeStatement = function (statement) {
 
 exports.getFunctionStatementBrief = function (statements) {
     return statements.map(statement => {
+        if (typeof statement == 'string') {
+            return statement;
+        }
         return statement.short;
     })
 }

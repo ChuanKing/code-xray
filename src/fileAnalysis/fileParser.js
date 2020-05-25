@@ -4,11 +4,10 @@ const { cleanString } = require('../util/cleanUtil');
 
 const { getPackage } = require('./fileUtil');
 const { getImports } = require('./fileUtil');
-const { getMainClass } = require('./fileUtil');
+const { extractClass } = require('./fileUtil');
 
 const { parseClass } = require('../classAnalysis/classParser');
 
-// TODO: interface
 // TODO: abstract class
 exports.parseFile = function (content) {
 
@@ -18,9 +17,9 @@ exports.parseFile = function (content) {
 
     var package = getPackage(content);
     var imports = getImports(content);
-    var mainClass = getMainClass(content);
+    var mainClass = extractClass(content)[0];
 
-    var maniClassInfo = parseClass(imports, mainClass);
+    var maniClassInfo = parseClass(package, imports, mainClass);
 
     return {
         package,

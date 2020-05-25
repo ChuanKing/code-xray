@@ -21,18 +21,11 @@ exports.jumpToEnd = function (string, start, c1, c2) {
 exports.ignoreQuotes = function ignoreQuotes(string, start) {
     start++;
     while (start < string.length && string.charAt(start) != '"') {
-        if (string.charAt(start) == '\\') {
+        while (string.charAt(start) == '\\') {            
             start++;
         }
         start++;
     }
     return start;
-}
-
-exports.log = function(msg) {
-
-    if (shouldLog && msg.length > 0) {
-        console.log(msg);
-    }
 }
 

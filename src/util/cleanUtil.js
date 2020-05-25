@@ -63,6 +63,7 @@ function cleanCommentType1(data) {
     return data;
 }
 
+// TODO: improve
 function cleanCommentType2(data) {
     // clean this type 
     var lines = data.split('\n');

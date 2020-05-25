@@ -17,8 +17,10 @@ exports.getFunctionAccessLevel = function (classMethod) {
     return 'default';
 }
 
-exports.getFunctionOutputType = function(funSignature, imports) {
+exports.getFunctionOutputType = function(classMethod, imports) {
     
+    var funSignature = getFucnctionSignature(classMethod);
+
     var start = 0;
     var end = funSignature.indexOf('(');
     var funSignature = funSignature.substring(start, end).trim();
@@ -31,8 +33,10 @@ exports.getFunctionOutputType = function(funSignature, imports) {
     };
 }
 
-exports.getFunctionName = function(funSignature) {
+exports.getFunctionName = function(classMethod) {
     
+    var funSignature = getFucnctionSignature(classMethod);
+
     var start = 0;
     var end = funSignature.indexOf('(');
     var funSignature = funSignature.substring(start, end).trim();
@@ -40,7 +44,9 @@ exports.getFunctionName = function(funSignature) {
     return removeAccessIdentifier(funSignature).split(' ')[1];
 }
 
-exports.getFunctionInput = function(funSignature, imports) {
+exports.getFunctionInput = function(classMethod, imports) {
+    var funSignature = getFucnctionSignature(classMethod);
+
     var firstParentheses = funSignature.indexOf('(') + 1;
     var lastParentheses = funSignature.indexOf(')');
     var inputList = funSignature
@@ -94,6 +100,7 @@ exports.getFunctionContent = function(fun) {
 function getFucnctionSignature(classMethod) {
     var start = 0;
     var end = classMethod.indexOf('{');
+    end = (end == -1) ? classMethod.length : end;
     var funSignature = classMethod.substring(start, end);
     
     return funSignature
@@ -107,6 +114,7 @@ function removeAccessIdentifier(funSignature) {
         .replace('public ', '')
         .replace('private ', '')
         .replace('protected ', '')
+        .replace('abstract ', '')
         .replace('static ', '')
         .replace(/final /g, '')
         .trim();
