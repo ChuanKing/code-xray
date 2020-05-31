@@ -1,4 +1,5 @@
 const { jumpToEnd } = require('../util/util');
+const { cleanGenerics } = require('../util/cleanUtil');
 
 const { getFunctionOutputType } = require("../functionAnalysis/functionUtils");
 const { getFunctionName } = require("../functionAnalysis/functionUtils");
@@ -65,7 +66,7 @@ exports.getClassName = function (classSignature) {
     return classSignature.split(' ').pop();
 }
 
-exports.getClassInterfaces = function (classSignature) {
+exports.getClassInterfaces = function (classSignature, imports) {
 
     var start = classSignature.indexOf('implements');
     start = (start == -1) ? classSignature.length: start;
@@ -76,7 +77,15 @@ exports.getClassInterfaces = function (classSignature) {
         .split('extends')[0]
         .trim();
 
-    return implements;
+    var implements = cleanGenerics(implements)
+    
+    return implements
+        .split(',')
+        .map(implement => {
+            implement = implement.trim();
+            
+            return imports[implement] || implement
+        });
 }
 
 exports.getClassParent = function (classSignature) {
@@ -110,14 +119,11 @@ exports.getClassFieldsMethods = function (classType, content, imports) {
 
 function getDefaultClassFieldsMethods(content, imports){
     var classFields = {};
-    var classAbstractMethods = [];
     var classMethods = [];
 
     while (content.trim().length > 0) {
         var bracesLoc = content.indexOf('{');
         var semiLoc = content.indexOf(';');
-        var parenthesesLoc = content.indexOf('(');
-        var equalLoc = content.indexOf('=');
         
         bracesLoc = (bracesLoc == -1) ? content.length + 1 : bracesLoc;
         semiLoc = (semiLoc == -1) ? content.length + 1 : semiLoc;
@@ -132,43 +138,38 @@ function getDefaultClassFieldsMethods(content, imports){
             classMethods.push(method);
         }
 
-        // abstract method
-        // TODO: move to fucntion 
-        else if (parenthesesLoc >= 0 && equalLoc == -1) {
-            var end = semiLoc + 1;
-
-            var classMethod = content.substring(0, end).trim();
-
-            var functionOutputType = getFunctionOutputType(classMethod, imports);
-            var functionName = getFunctionName(classMethod);
-            var functionInput = getFunctionInput(classMethod, imports);
-
-            classMethods.push(classMethod);
-
-            content = content.substring(end);
-        }
-
-        // class field
         else {
-            var start = 0;
-            var end = semiLoc + 1;
-            var field = content.substring(0, end).trim();
             
-            content = content.substring(end);
+            var end = semiLoc + 1;
+            var signature = content.substring(0, end).trim();
+            
 
-            // TODO: abstract class and interface
-            var [fieldClass, fieldName] = field
-                .replace('public ', '')
-                .replace('private ', '')
-                .replace('static ', '')
-                .replace('final ', '')
-                .replace(';', '')
-                .trim()
-                .split(' ');
+            var parenthesesLoc = signature.indexOf('(');
+            var equalLoc = signature.indexOf('=');
 
-            if (fieldClass && fieldName) {
-                classFields[fieldName.trim()] = imports[fieldClass.trim()] || fieldClass.trim();
+            // abstract method
+            // TODO: move to fucntion 
+            if (parenthesesLoc >= 0 && equalLoc == -1) {
+                classMethods.push(signature);
             }
+
+            // class field
+            else {
+                var [fieldClass, fieldName] = signature
+                    .replace('public ', '')
+                    .replace('private ', '')
+                    .replace('static ', '')
+                    .replace('final ', '')
+                    .replace(';', '')
+                    .trim()
+                    .split(' ');
+
+                if (fieldClass && fieldName) {
+                    classFields[fieldName.trim()] = imports[fieldClass.trim()] || fieldClass.trim();
+                }
+            }
+
+            content = content.substring(end);
         }
     }
     

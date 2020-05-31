@@ -1,5 +1,3 @@
-const { shouldLog } = require("../config.js");
-
 exports.jumpToEnd = function (string, start, c1, c2) {
     var count = 1;
     start++;

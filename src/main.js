@@ -1,22 +1,31 @@
 const fs = require('fs').promises;
 
 const { getFiles } = require('./util/fileUtil');
+const { saveClassInfo } = require('./util/fileUtil');
 const { filterProcessingFile } = require('./util/fileUtil');
 const { logObjectWithPrettyFormat } = require('./util/logUtil');
 const { logClassBreif } = require('./util/logUtil');
 
 const { parseFile } = require('./fileAnalysis/fileParser');
+const { createRelationShip } = require('./relationAnalysis/relationAnalysis');
+const { findTree } = require('./relationAnalysis/relationAnalysis');
 
-const inputRoot = './resources';
+const inputRoot = '';
 const outputRoot = './output';
 
 const start = async function () {
 
     const files = await getFiles(inputRoot);
 
-    files
-        .filter(filterProcessingFile)
-        .forEach(processFile);
+    const classInfoList = await Promise.all(
+        files
+            .filter(filterProcessingFile)
+            .map(processFile)
+    );
+    
+    const relationship = createRelationShip(classInfoList);
+    console.log(JSON.stringify(relationship));
+    // findTree(relationship, startPoint, 0);
 }
 
 const processFile = async function (file) {
@@ -27,10 +36,9 @@ const processFile = async function (file) {
         // logObjectWithPrettyFormat(classInfo);
         // logClassBreif(classInfo, file);
         
-        if (classInfo && classInfo.maniClassInfo && classInfo.maniClassInfo.className) {
-            var filename = `${classInfo.package.replace('com.amazon.marketplacelabelaccountingmanagementservice.', '')}.${classInfo.maniClassInfo.className}`
-            await fs.writeFile(`${outputRoot}/${filename}.json`, JSON.stringify(classInfo, null, 4));
-        }
+        // saveClassInfo(classInfo, outputRoot)
+
+        return classInfo;
     } catch (error) {
         console.log(`pasering ${file} fail with error: ${error}`);
         console.log(error.stack);

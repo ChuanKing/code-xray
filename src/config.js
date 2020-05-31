@@ -15,3 +15,8 @@ exports.excludeStatements = [
     'log.info',
     'log.error',
 ];
+
+exports.excludeRelationPackage = [
+    'com.amazon.marketplacelabelaccountingmanagementservice.domainmodel'
+];
+

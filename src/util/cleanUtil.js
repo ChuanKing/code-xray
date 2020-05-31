@@ -31,23 +31,35 @@ exports.cleanAnnotation = function (content) {
     return content;
 }
 
-exports.cleanString = function (fun) {
+exports.cleanString = function (content) {
     
     var start = 0;
 
-    while (start >= 0 && start < fun.length) {
+    while (start >= 0 && start < content.length) {
 
-        var start = fun.indexOf('"', start);
-        var end = ignoreQuotes(fun, start) + 1;
+        var start = content.indexOf('"', start);
+        var end = ignoreQuotes(content, start) + 1;
         
         if (start == -1) break;
 
-        fun = fun.substring(0, start) + '""' + fun.substring(end);
+        content = content.substring(0, start) + '""' + content.substring(end);
 
         start = start + 2; 
     }
 
-    return fun;
+    return content;
+}
+
+exports.cleanGenerics = function (content) {
+
+    if (content.indexOf('<') === -1) {
+        return content;
+    }
+
+    var start = content.indexOf('<');
+    var end = jumpToEnd(content, start, '<', '>');
+
+    return content.substring(0, start) + content.substring(end);
 }
 
 function cleanCommentType1(data) {

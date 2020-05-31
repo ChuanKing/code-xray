@@ -116,6 +116,7 @@ function removeAccessIdentifier(funSignature) {
         .replace('protected ', '')
         .replace('abstract ', '')
         .replace('static ', '')
+        .replace('synchronized ', '')
         .replace(/final /g, '')
         .trim();
 }
