@@ -1,10 +1,6 @@
 const { jumpToEnd } = require('../util/util');
 const { cleanGenerics } = require('../util/cleanUtil');
 
-const { getFunctionOutputType } = require("../functionAnalysis/functionUtils");
-const { getFunctionName } = require("../functionAnalysis/functionUtils");
-const { getFunctionInput } = require("../functionAnalysis/functionUtils");
-
 exports.getClassSignature = function (mainClass) {
     var start = 0;
     var end = mainClass.indexOf('{');
@@ -40,12 +36,18 @@ exports.checkAbstract = function (classSignature) {
 
 exports.getClassType = function (classSignature) {
 
-    if (classSignature.indexOf('class') >= 0) {
-        return 'class'
+    // annotation
+    // should before interface
+    if (classSignature.indexOf('@interface') >= 0) {
+        return '@interface'
     }
 
     if (classSignature.indexOf('interface') >= 0) {
         return 'interface'
+    }
+
+    if (classSignature.indexOf('class') >= 0) {
+        return 'class'
     }
 
     if (classSignature.indexOf('enum') >= 0) {
@@ -148,21 +150,22 @@ function getDefaultClassFieldsMethods(content, imports){
             var equalLoc = signature.indexOf('=');
 
             // abstract method
-            // TODO: move to fucntion 
             if (parenthesesLoc >= 0 && equalLoc == -1) {
                 classMethods.push(signature);
             }
 
             // class field
             else {
-                var [fieldClass, fieldName] = signature
+                signature = signature
                     .replace('public ', '')
                     .replace('private ', '')
                     .replace('static ', '')
                     .replace('final ', '')
                     .replace(';', '')
-                    .trim()
-                    .split(' ');
+                    .trim();
+                
+                signature = cleanGenerics(signature);
+                var [fieldClass, fieldName] = signature.split(' ');
 
                 if (fieldClass && fieldName) {
                     classFields[fieldName.trim()] = imports[fieldClass.trim()] || fieldClass.trim();

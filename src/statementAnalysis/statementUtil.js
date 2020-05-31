@@ -2,17 +2,20 @@ const { excludeStatements } = require("../config.js");
 
 const { log } = require("../util/logUtil");
 const { jumpToEnd } = require("../util/util");
+const { cleanGenerics } = require("../util/cleanUtil");
 
 exports.cleanStatement = function (statement) {
-    return statement.replace('return', '')
+    statement = statement.replace('return', '')
         .replace(/\s\s+/g, ' ')
         .replace(/\s+\./g, '.')
         .replace(/\.\s+/g, '.')
         .trim();
+    
+    return cleanGenerics(statement);
 }
 
 // TODO
-exports.isSupportStatement = function (statement) {
+exports.isUnsupportStatement = function (statement) {
 
     if (statement.indexOf('do ') >= 0 ||
         statement.indexOf('do{') >= 0 ||
