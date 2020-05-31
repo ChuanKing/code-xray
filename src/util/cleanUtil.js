@@ -52,14 +52,14 @@ exports.cleanString = function (content) {
 
 exports.cleanGenerics = function (content) {
 
-    if (content.indexOf('<') === -1) {
-        return content;
+    while (content.indexOf('<') >= 0 && content.indexOf('<') >= 0) {
+        var start = content.indexOf('<');
+        var end = jumpToEnd(content, start, '<', '>');
+        
+        content = content.substring(0, start) + content.substring(end);
     }
 
-    var start = content.indexOf('<');
-    var end = jumpToEnd(content, start, '<', '>');
-
-    return content.substring(0, start) + content.substring(end);
+    return content;
 }
 
 function cleanCommentType1(data) {

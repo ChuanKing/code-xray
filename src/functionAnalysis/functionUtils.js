@@ -1,3 +1,5 @@
+const { cleanGenerics } = require('../util/cleanUtil');
+
 exports.getFunctionAccessLevel = function (classMethod) {
 
     var funSignature = getFucnctionSignature(classMethod);
@@ -49,13 +51,15 @@ exports.getFunctionInput = function(classMethod, imports) {
 
     var firstParentheses = funSignature.indexOf('(') + 1;
     var lastParentheses = funSignature.indexOf(')');
-    var inputList = funSignature
-        .substring(firstParentheses, lastParentheses)
-        .split(',');
+    var input = funSignature.substring(firstParentheses, lastParentheses).trim();
+    
+    if (input.length == 0) {
+        return {};
+    }
 
     var inputs = {};
     
-    inputList.forEach(input => {
+    input.split(',').forEach(input => {
         input = input
             .replace('final', '')
             .trim();
@@ -103,10 +107,10 @@ function getFucnctionSignature(classMethod) {
     end = (end == -1) ? classMethod.length : end;
     var funSignature = classMethod.substring(start, end);
     
-    return funSignature
+    return cleanGenerics(funSignature
         .replace('\n', '')
         .replace(/\s\s+/g, ' ')
-        .trim();
+        .trim());
 }
 
 function removeAccessIdentifier(funSignature) {

@@ -2,47 +2,38 @@ const { excludeRelationPackage } = require('../config');
 
 exports.createRelationShip = function (classes) {
     
-    var relationArray =classes
+    return classes
         .filter(filterMissingInfoClass)
         .filter(ignoreInterface)
         .filter(filterExcludeClass)
-        .map(clazz => {
+        .reduce((relationMap, clazz) => {
             var package = clazz.package;
             var className = clazz.maniClassInfo.className;
             var functions = clazz.maniClassInfo.functionsInfo;
             
-            return functions.map(fun => {
-                var functionName = fun.functionName;
-                var functionStatements = fun.functionStatements;
-                var id = `${package}.${className}.${functionName}`;
+            return functions.reduce((relationMap, fun) => {
+                var id = `${package}.${className}.${fun.functionName}`;
 
-                var relationElement = {
-                    'id': `${package}.${className}.${functionName}`,
-                    'idShort': `${className}.${functionName}`,
+                relationMap[id] = {
+                    'id': `${package}.${className}.${fun.functionName}`,
+                    'idShort': `${className}.${fun.functionName}`,
                     'accessLevel': fun.functionAccessLevel,
                     'relation': [],
-                    'relationShort': []
+                    'relationShort': [] 
                 };
                 
-                functionStatements
+                fun.functionStatements
                     .filter(statement => {
                         return typeof statement != 'string';
                     })
                     .forEach(statement => {
-                        relationElement.relation.push(statement.full);
-                        relationElement.relationShort.push(statement.short);
+                        relationMap[id].relation.push(statement.full);
+                        relationMap[id].relationShort.push(statement.short);
                     });
-
-                return relationElement;
-            });
-        });
-    
-    relationArray = [].concat.apply([], relationArray)
-    
-    return relationArray.reduce(function(map, obj) {
-        map[obj.id] = obj;
-        return map;
-    }, {});
+                
+                return relationMap;
+            }, relationMap);
+        }, {});
 
 }
 
