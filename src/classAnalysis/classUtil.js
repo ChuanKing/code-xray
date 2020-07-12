@@ -31,7 +31,8 @@ exports.getClassAccessLevel = function (classSignature) {
 
 exports.checkAbstract = function (classSignature) {
 
-    return classSignature.indexOf('abstract') >= 0;
+    return classSignature.indexOf('abstract') >= 0 || 
+        classSignature.indexOf('interface') >= 0;
 }
 
 exports.getClassType = function (classSignature) {
@@ -87,10 +88,13 @@ exports.getClassInterfaces = function (classSignature, imports) {
             implement = implement.trim();
             
             return imports[implement] || implement
+        })
+        .filter(implement => {
+            return implement.length > 0;
         });
 }
 
-exports.getClassParent = function (classSignature) {
+exports.getClassParent = function (classSignature, imports) {
 
     var start = classSignature.indexOf('extends');
     start = (start == -1) ? classSignature.length: start;
@@ -101,7 +105,7 @@ exports.getClassParent = function (classSignature) {
         .split('implements')[0]
         .trim();
 
-    return parent;
+    return imports[parent] || parent
 }
 
 exports.getClassContent = function (mainClass) {

@@ -7,11 +7,12 @@ const { logObjectWithPrettyFormat } = require('./util/logUtil');
 const { logClassBreif } = require('./util/logUtil');
 
 const { parseFile } = require('./fileAnalysis/fileParser');
-const { createRelationShip } = require('./relationAnalysis/relationAnalysis');
-const { findTree } = require('./relationAnalysis/relationAnalysis');
+const { createRelationShip } = require('./relationAnalysis/relationParser');
+const { findTree } = require('./relationAnalysis/relationParser');
 
-const inputRoot = '';
+const inputRoot = '/Volumes/Unix/workspace/MerchantShippingOrchestratorService/src/MerchantShippingOrchestratorService';
 const outputRoot = './output';
+const startPoint = 'com.amazon.merchantshippingorchestratorservice.controller.GetPreferredShippingServicesController.applySellerPreferences'
 
 const start = async function () {
 
@@ -22,10 +23,9 @@ const start = async function () {
             .filter(filterProcessingFile)
             .map(processFile)
     );
-    
+
     const relationship = createRelationShip(classInfoList);
-    console.log(JSON.stringify(relationship));
-    // findTree(relationship, startPoint, 0);
+    findTree(relationship, startPoint);
 }
 
 const processFile = async function (file) {
@@ -35,7 +35,7 @@ const processFile = async function (file) {
 
         // logObjectWithPrettyFormat(classInfo);
         // logClassBreif(classInfo, file);
-        
+
         // saveClassInfo(classInfo, outputRoot)
 
         return classInfo;
@@ -46,3 +46,5 @@ const processFile = async function (file) {
 }
 
 start();
+
+// processFile(`${inputRoot}/com/amazon/marketplacelabelaccountingmanagementservice/utilities/ApolloOperationalConfigRetrievalUtil.java`)

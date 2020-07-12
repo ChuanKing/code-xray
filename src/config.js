@@ -13,10 +13,11 @@ exports.unSupportStatements = ['do', 'for', 'while', 'if'];
 
 exports.excludeStatements = [
     'log.info',
-    'log.error',
+    'log.error'
 ];
 
 exports.excludeRelationPackage = [
-    'com.amazon.marketplacelabelaccountingmanagementservice.domainmodel'
+    'com.amazon.marketplacelabelaccountingmanagementservice.domainmodel',
+    'com.amazon.merchantshippingorchestratorservice.external.lexs.function'
 ];
 

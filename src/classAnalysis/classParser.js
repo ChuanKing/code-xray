@@ -19,7 +19,7 @@ exports.parseClass = function(package, imports, mainClass) {
     var classType = getClassType(classSignature);
     var className = getClassName(classSignature);
     var classInterfaces = getClassInterfaces(classSignature, imports);
-    var classParent = getClassParent(classSignature);
+    var classParent = getClassParent(classSignature, imports);
 
     var classContent = getClassContent(mainClass);
   
