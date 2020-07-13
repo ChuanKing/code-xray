@@ -19,14 +19,8 @@ exports.getFiles = async function (dir) {
     return Array.prototype.concat(...files);
 }
 
-exports.saveClassInfo = async function (classInfo, outputRoot) {
-    if (classInfo && classInfo.maniClassInfo && classInfo.maniClassInfo.className) {
-        let filename = `${classInfo.package.replace('com.amazon.marketplacelabelaccountingmanagementservice.', '')}.${classInfo.maniClassInfo.className}`
-        await fs.writeFile(`${outputRoot}/${filename}.json`, JSON.stringify(classInfo, null, 4), () => {});
-    } else {
-        log(`cannot save file`);
-        log(`classInfo`);
-    }
+exports.saveInfo = async function (info, output) {
+    await fs.writeFile(output, JSON.stringify(info, null, 4), () => {});
 }
 
 exports.filterProcessingFile = function (file) {

@@ -1,7 +1,7 @@
 const fs = require('fs').promises;
 
 const { getFiles } = require('./util/fileUtil');
-const { saveClassInfo } = require('./util/fileUtil');
+const { saveInfo } = require('./util/fileUtil');
 const { filterProcessingFile } = require('./util/fileUtil');
 const { logObjectWithPrettyFormat } = require('./util/logUtil');
 const { logClassBreif } = require('./util/logUtil');
@@ -10,9 +10,10 @@ const { parseFile } = require('./fileAnalysis/fileParser');
 const { createRelationShip } = require('./relationAnalysis/relationParser');
 const { findTree } = require('./relationAnalysis/relationParser');
 
-const inputRoot = '/Volumes/Unix/workspace/MerchantShippingOrchestratorService/src/MerchantShippingOrchestratorService';
-const outputRoot = './output';
-const startPoint = 'com.amazon.merchantshippingorchestratorservice.controller.GetPreferredShippingServicesController.applySellerPreferences'
+const inputRoot = process.argv[2];
+const startPoint = process.argv[3];
+const outputRoot = process.argv.length >= 5 ? process.argv[4]: undefined;
+const isDebug = process.argv.length >= 6 ? process.argv[5]: false;
 
 const start = async function () {
 
@@ -26,6 +27,12 @@ const start = async function () {
 
     const relationship = createRelationShip(classInfoList);
     findTree(relationship, startPoint);
+
+    if (!isDebug && outputRoot) {
+        saveInfo(classInfoList, `${outputRoot}/classInfoList.json`);
+        saveInfo(relationship, `${outputRoot}/relationship.json`);
+    }
+
 }
 
 const processFile = async function (file) {
@@ -33,10 +40,10 @@ const processFile = async function (file) {
         let data = await fs.readFile(file, 'utf8');
         let classInfo = parseFile(data); 
 
-        // logObjectWithPrettyFormat(classInfo);
-        // logClassBreif(classInfo, file);
-
-        // saveClassInfo(classInfo, outputRoot)
+        if (isDebug) {
+            logObjectWithPrettyFormat(classInfo);
+            logClassBreif(classInfo, file);
+        }
 
         return classInfo;
     } catch (error) {
@@ -46,5 +53,3 @@ const processFile = async function (file) {
 }
 
 start();
-
-// processFile(`${inputRoot}/com/amazon/marketplacelabelaccountingmanagementservice/utilities/ApolloOperationalConfigRetrievalUtil.java`)
