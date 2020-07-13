@@ -2,7 +2,7 @@ const { cleanGenerics } = require('../util/cleanUtil');
 
 exports.getFunctionAccessLevel = function (classMethod) {
 
-    var funSignature = getFucnctionSignature(classMethod);
+    let funSignature = getFucnctionSignature(classMethod);
     
     if (funSignature.indexOf('public') >= 0) {
         return 'public'
@@ -21,13 +21,13 @@ exports.getFunctionAccessLevel = function (classMethod) {
 
 exports.getFunctionOutputType = function(classMethod, imports) {
     
-    var funSignature = getFucnctionSignature(classMethod);
+    let funSignature = getFucnctionSignature(classMethod);
 
-    var start = 0;
-    var end = funSignature.indexOf('(');
-    var funSignature = funSignature.substring(start, end).trim();
+    let start = 0;
+    let end = funSignature.indexOf('(');
+    funSignature = funSignature.substring(start, end).trim();
 
-    var typeName = removeAccessIdentifier(funSignature).split(' ')[0];
+    let typeName = removeAccessIdentifier(funSignature).split(' ')[0];
 
     return {
         name: typeName,
@@ -37,34 +37,34 @@ exports.getFunctionOutputType = function(classMethod, imports) {
 
 exports.getFunctionName = function(classMethod) {
     
-    var funSignature = getFucnctionSignature(classMethod);
+    let funSignature = getFucnctionSignature(classMethod);
 
-    var start = 0;
-    var end = funSignature.indexOf('(');
-    var funSignature = funSignature.substring(start, end).trim();
+    let start = 0;
+    let end = funSignature.indexOf('(');
+    funSignature = funSignature.substring(start, end).trim();
 
     return removeAccessIdentifier(funSignature).split(' ')[1];
 }
 
 exports.getFunctionInput = function(classMethod, imports) {
-    var funSignature = getFucnctionSignature(classMethod);
+    let funSignature = getFucnctionSignature(classMethod);
 
-    var firstParentheses = funSignature.indexOf('(') + 1;
-    var lastParentheses = funSignature.indexOf(')');
-    var input = funSignature.substring(firstParentheses, lastParentheses).trim();
+    let firstParentheses = funSignature.indexOf('(') + 1;
+    let lastParentheses = funSignature.indexOf(')');
+    let input = funSignature.substring(firstParentheses, lastParentheses).trim();
     
     if (input.length == 0) {
         return {};
     }
 
-    var inputs = {};
+    let inputs = {};
     
     input.split(',').forEach(input => {
         input = input
             .replace('final', '')
             .trim();
         
-        var [type, name] = input.split(' ');
+        let [type, name] = input.split(' ');
         
         inputs[name] = imports[type] || type
     });
@@ -73,26 +73,26 @@ exports.getFunctionInput = function(classMethod, imports) {
 }
 
 exports.getFunctionContent = function(fun) {
-    var firstBrace = fun.indexOf('{');
-    var lastBrace = fun.lastIndexOf('}');
+    let firstBrace = fun.indexOf('{');
+    let lastBrace = fun.lastIndexOf('}');
 
     fun = fun.substring(firstBrace + 1, lastBrace);
     fun = fun.replace('/n', '').replace(/\s\s+/g, ' ');
     
-    var lines = [];
+    let lines = [];
 
     while (fun.length > 0) {
         fun = fun.trim();
         
-        var semicolon = fun.indexOf(';');
-        var forwardBrace = fun.indexOf('{');
-        var backwardBrace = fun.indexOf('}');
+        let semicolon = fun.indexOf(';');
+        let forwardBrace = fun.indexOf('{');
+        let backwardBrace = fun.indexOf('}');
         
         semicolon = (semicolon < 0) ? fun.length + 1: semicolon;
         forwardBrace = (forwardBrace < 0) ? fun.length + 1: forwardBrace;
         backwardBrace = (backwardBrace < 0) ? fun.length + 1: backwardBrace;
 
-        var end = Math.min(semicolon, forwardBrace, backwardBrace) + 1;
+        let end = Math.min(semicolon, forwardBrace, backwardBrace) + 1;
         
         lines.push(fun.substring(0, end).trim());
         fun = fun.substring(end);
@@ -102,10 +102,10 @@ exports.getFunctionContent = function(fun) {
 }
 
 function getFucnctionSignature(classMethod) {
-    var start = 0;
-    var end = classMethod.indexOf('{');
+    let start = 0;
+    let end = classMethod.indexOf('{');
     end = (end == -1) ? classMethod.length : end;
-    var funSignature = classMethod.substring(start, end);
+    let funSignature = classMethod.substring(start, end);
     
     return cleanGenerics(funSignature
         .replace('\n', '')

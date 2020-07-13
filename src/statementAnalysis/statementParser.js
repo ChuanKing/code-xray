@@ -14,8 +14,8 @@ exports.parseStatement = function (statement, parameters, imports) {
     statement = cleanStatement(statement);
     statement = parseStatementOutput(statement, imports, parameters);
     
-    var statementSignature = getStatementSignature(statement, parameters, imports);
-    var statementInput = getStatementInput(statement);
+    let statementSignature = getStatementSignature(statement, parameters, imports);
+    let statementInput = getStatementInput(statement);
 
     return statementSignature;
 }

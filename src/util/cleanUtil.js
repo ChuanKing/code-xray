@@ -11,12 +11,12 @@ exports.cleanComment = function cleanComment(content) {
 
 exports.cleanAnnotation = function (content) {
 
-    var start = -1;
-    var end = -1;
+    let start = -1;
+    let end = -1;
 
     do {
-        var start = content.indexOf('@');
-        var end = start;
+        start = content.indexOf('@');
+        end = start;
 
         for (; end < content.length && content.charAt(end) == ' '; end++) ;
         for (; end < content.length && RegExp(/^[a-zA-Z0-9@]+$/).test(content.charAt(end)); end++) ;
@@ -33,12 +33,12 @@ exports.cleanAnnotation = function (content) {
 
 exports.cleanString = function (content) {
     
-    var start = 0;
+    let start = 0;
 
     while (start >= 0 && start < content.length) {
 
-        var start = content.indexOf('"', start);
-        var end = ignoreQuotes(content, start) + 1;
+        start = content.indexOf('"', start);
+        let end = ignoreQuotes(content, start) + 1;
         
         if (start == -1) break;
 
@@ -53,8 +53,8 @@ exports.cleanString = function (content) {
 exports.cleanGenerics = function (content) {
 
     while (content.indexOf('<') >= 0 && content.indexOf('<') >= 0) {
-        var start = content.indexOf('<');
-        var end = jumpToEnd(content, start, '<', '>');
+        let start = content.indexOf('<');
+        let end = jumpToEnd(content, start, '<', '>');
         
         content = content.substring(0, start) + content.substring(end);
     }
@@ -65,8 +65,8 @@ exports.cleanGenerics = function (content) {
 function cleanCommentType1(data) {
     /* clean this type */
     while (true) {
-        var start = data.indexOf('/*');
-        var end = data.indexOf('*/', start);
+        let start = data.indexOf('/*');
+        let end = data.indexOf('*/', start);
         if (start === -1) {
             break;
         }
@@ -78,7 +78,7 @@ function cleanCommentType1(data) {
 // TODO: improve
 function cleanCommentType2(data) {
     // clean this type 
-    var lines = data.split('\n');
+    let lines = data.split('\n');
     return lines.map(line => line.split('//')[0])
                 .join('\n');
 }

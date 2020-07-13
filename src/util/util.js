@@ -1,5 +1,5 @@
 exports.jumpToEnd = function (string, start, c1, c2) {
-    var count = 1;
+    let count = 1;
     start++;
     while (start < string.length && count > 0) {
         if (string.charAt(start) == '"') {

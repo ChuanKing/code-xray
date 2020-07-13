@@ -16,7 +16,7 @@ exports.filterMissingInfoClass = function(clazz) {
 }
 
 exports.filterExcludeClass = function(clazz) {
-    var isInclude = true;
+    let isInclude = true;
             
     excludeRelationPackage.forEach(package => {
         if (clazz.package.indexOf(package) >= 0) {

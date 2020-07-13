@@ -55,10 +55,10 @@ exports.getFunctionStatementBrief = function (statements) {
 exports.parseStatementOutput = function (statement, imports, parameters) {
     if (statement.indexOf('=') < 0) return statement;
 
-    var output = statement.split('=')[0];
+    let output = statement.split('=')[0];
     
-    var responseType = (output.indexOf(' ') >= 0) ? output.split(' ')[0].trim() : undefined;
-    var responseName = (output.indexOf(' ') >= 0) ? output.split(' ')[1].trim() : output;
+    let responseType = (output.indexOf(' ') >= 0) ? output.split(' ')[0].trim() : undefined;
+    let responseName = (output.indexOf(' ') >= 0) ? output.split(' ')[1].trim() : output;
     
     responseType = imports[responseType] || responseType;
     responseName = responseName.trim();
@@ -73,15 +73,15 @@ exports.parseStatementOutput = function (statement, imports, parameters) {
 exports.getStatementSignature = function(statement, parameters, imports) {
     statement = removeOutput(statement);
 
-    var signature = statement.split('(')[0];
+    let signature = statement.split('(')[0];
 
     // call function in other class
     if (signature.indexOf('.') > 0) {
 
-        var [object, functionName] = signature.split('.');
+        let [object, functionName] = signature.split('.');
     
-        var classFullName = parameters[object] || imports[object] || object;
-        var classShortName = classFullName.split('.').pop();
+        let classFullName = parameters[object] || imports[object] || object;
+        let classShortName = classFullName.split('.').pop();
     
         return {
             name: functionName,
@@ -100,8 +100,8 @@ exports.getStatementSignature = function(statement, parameters, imports) {
 exports.getStatementInput = function(statement) {
     statement = removeOutput(statement);
 
-    var start = statement.indexOf('(');
-    var end = jumpToEnd(statement, start, '(', ')');
+    let start = statement.indexOf('(');
+    let end = jumpToEnd(statement, start, '(', ')');
 
     return statement.substring(start + 1, end - 1);
 }

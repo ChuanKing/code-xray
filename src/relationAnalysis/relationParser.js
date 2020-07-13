@@ -114,18 +114,18 @@ function getAbstractClassRelation(relationMap, clazz) {
 
 function traverseTree(relationMap, start, deep) {
 
-    var functionRelation = relationMap.functionRelation;
-    var classRelation = {...relationMap.interfaceRelation, ...relationMap.abstractClassRelation};
+    let functionRelation = relationMap.functionRelation;
+    let classRelation = {...relationMap.interfaceRelation, ...relationMap.abstractClassRelation};
 
-    var currentNode = functionRelation[start] || {};
-    var currentFunctionRelation = currentNode.relation || [];
+    let currentNode = functionRelation[start] || {};
+    let currentFunctionRelation = currentNode.relation || [];
 
     currentFunctionRelation.forEach(next => {
-        var lastDot = next.lastIndexOf('.');
-        var className = next.substring(0, lastDot); 
-        var functionName = next.substring(lastDot); 
+        let lastDot = next.lastIndexOf('.');
+        let className = next.substring(0, lastDot); 
+        let functionName = next.substring(lastDot); 
 
-        var implementations = classRelation[className] || [];
+        let implementations = classRelation[className] || [];
         implementations.unshift(className);
         
         implementations = implementations
@@ -140,7 +140,7 @@ function traverseTree(relationMap, start, deep) {
             return ;
         }
 
-        var multiImplIndicator = implementations.length > 1 ? '-' : '';
+        let multiImplIndicator = implementations.length > 1 ? '-' : '';
 
         implementations
             .forEach(impl => {

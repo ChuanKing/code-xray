@@ -2,8 +2,8 @@ const { jumpToEnd } = require('../util/util');
 const { cleanGenerics } = require('../util/cleanUtil');
 
 exports.getClassSignature = function (mainClass) {
-    var start = 0;
-    var end = mainClass.indexOf('{');
+    let start = 0;
+    let end = mainClass.indexOf('{');
     
     return mainClass
         .substring(start, end)
@@ -71,16 +71,16 @@ exports.getClassName = function (classSignature) {
 
 exports.getClassInterfaces = function (classSignature, imports) {
 
-    var start = classSignature.indexOf('implements');
+    let start = classSignature.indexOf('implements');
     start = (start == -1) ? classSignature.length: start;
     
-    var implements = classSignature
+    let implements = classSignature
         .substring(start)
         .replace('implements', '')
         .split('extends')[0]
         .trim();
 
-    var implements = cleanGenerics(implements)
+    implements = cleanGenerics(implements)
     
     return implements
         .split(',')
@@ -96,10 +96,10 @@ exports.getClassInterfaces = function (classSignature, imports) {
 
 exports.getClassParent = function (classSignature, imports) {
 
-    var start = classSignature.indexOf('extends');
+    let start = classSignature.indexOf('extends');
     start = (start == -1) ? classSignature.length: start;
     
-    var parent = classSignature
+    let parent = classSignature
         .substring(start)
         .replace('extends', '')
         .split('implements')[0]
@@ -109,8 +109,8 @@ exports.getClassParent = function (classSignature, imports) {
 }
 
 exports.getClassContent = function (mainClass) {
-    var start = mainClass.indexOf('{');
-    var end = mainClass.lastIndexOf('}');
+    let start = mainClass.indexOf('{');
+    let end = mainClass.lastIndexOf('}');
     return mainClass.substring(start + 1, end);
 }
 
@@ -124,21 +124,21 @@ exports.getClassFieldsMethods = function (classType, content, imports) {
 }
 
 function getDefaultClassFieldsMethods(content, imports){
-    var classFields = {};
-    var classMethods = [];
+    let classFields = {};
+    let classMethods = [];
 
     while (content.trim().length > 0) {
-        var bracesLoc = content.indexOf('{');
-        var semiLoc = content.indexOf(';');
+        let bracesLoc = content.indexOf('{');
+        let semiLoc = content.indexOf(';');
         
         bracesLoc = (bracesLoc == -1) ? content.length + 1 : bracesLoc;
         semiLoc = (semiLoc == -1) ? content.length + 1 : semiLoc;
         
         // concrete function 
         if (bracesLoc < semiLoc) {
-            var start = content.indexOf('{');
-            var end = jumpToEnd(content, start, '{', '}');
-            var method = content.substring(0, end).trim();
+            let start = content.indexOf('{');
+            let end = jumpToEnd(content, start, '{', '}');
+            let method = content.substring(0, end).trim();
             
             content = content.substring(end);
             classMethods.push(method);
@@ -146,12 +146,12 @@ function getDefaultClassFieldsMethods(content, imports){
 
         else {
             
-            var end = semiLoc + 1;
-            var signature = content.substring(0, end).trim();
+            let end = semiLoc + 1;
+            let signature = content.substring(0, end).trim();
             
 
-            var parenthesesLoc = signature.indexOf('(');
-            var equalLoc = signature.indexOf('=');
+            let parenthesesLoc = signature.indexOf('(');
+            let equalLoc = signature.indexOf('=');
 
             // abstract method
             if (parenthesesLoc >= 0 && equalLoc == -1) {
@@ -169,7 +169,7 @@ function getDefaultClassFieldsMethods(content, imports){
                     .trim();
                 
                 signature = cleanGenerics(signature);
-                var [fieldClass, fieldName] = signature.split(' ');
+                let [fieldClass, fieldName] = signature.split(' ');
 
                 if (fieldClass && fieldName) {
                     classFields[fieldName.trim()] = imports[fieldClass.trim()] || fieldClass.trim();

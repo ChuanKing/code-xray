@@ -13,19 +13,19 @@ const { postParseFunction } = require('../functionAnalysis/functionParser');
 
 exports.parseClass = function(package, imports, mainClass) {
     
-    var classSignature = getClassSignature(mainClass);
-    var classAccessLevel = getClassAccessLevel(classSignature);
-    var isAbstract = checkAbstract(classSignature);
-    var classType = getClassType(classSignature);
-    var className = getClassName(classSignature);
-    var classInterfaces = getClassInterfaces(classSignature, imports);
-    var classParent = getClassParent(classSignature, imports);
+    let classSignature = getClassSignature(mainClass);
+    let classAccessLevel = getClassAccessLevel(classSignature);
+    let isAbstract = checkAbstract(classSignature);
+    let classType = getClassType(classSignature);
+    let className = getClassName(classSignature);
+    let classInterfaces = getClassInterfaces(classSignature, imports);
+    let classParent = getClassParent(classSignature, imports);
 
-    var classContent = getClassContent(mainClass);
+    let classContent = getClassContent(mainClass);
   
-    var [ classFields, classMethods ] = getClassFieldsMethods(classType, classContent, imports);
+    let [ classFields, classMethods ] = getClassFieldsMethods(classType, classContent, imports);
 
-    var functionsInfo = classMethods.map(classMethod => {
+    let functionsInfo = classMethods.map(classMethod => {
         return parseFunction(classMethod, classFields, imports);
     });
 

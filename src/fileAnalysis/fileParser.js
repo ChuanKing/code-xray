@@ -15,11 +15,11 @@ exports.parseFile = function (content) {
     content = cleanAnnotation(content);
     content = cleanString(content);
 
-    var package = getPackage(content);
-    var imports = getImports(content);
-    var mainClass = extractClass(content)[0];
+    let package = getPackage(content);
+    let imports = getImports(content);
+    let mainClass = extractClass(content)[0];
 
-    var maniClassInfo = parseClass(package, imports, mainClass);
+    let maniClassInfo = parseClass(package, imports, mainClass);
 
     return {
         package,

@@ -2,7 +2,7 @@ const { shouldLog } = require("../config.js");
 
 exports.log = function(msg, overrideShouldLog) {
 
-    var finalShouldLog = overrideShouldLog || shouldLog;
+    let finalShouldLog = overrideShouldLog || shouldLog;
 
     if (finalShouldLog && msg.length > 0) {
         console.log(msg);

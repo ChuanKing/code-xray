@@ -10,13 +10,13 @@ const { getFunctionStatementBrief } = require("../statementAnalysis/statementUti
 
 exports.parseFunction = function (classMethod, classFields, imports) {
 
-    var functionAccessLevel = getFunctionAccessLevel(classMethod);
-    var functionOutputType = getFunctionOutputType(classMethod, imports);
-    var functionName = getFunctionName(classMethod);
-    var functionInput = getFunctionInput(classMethod, imports);
-    var functionContent = getFunctionContent(classMethod);
-    var isAbstractFunction = functionContent.length == 0;
-    var functionStatements = getFunctionStatements(functionContent, functionInput, classFields, imports);
+    let functionAccessLevel = getFunctionAccessLevel(classMethod);
+    let functionOutputType = getFunctionOutputType(classMethod, imports);
+    let functionName = getFunctionName(classMethod);
+    let functionInput = getFunctionInput(classMethod, imports);
+    let functionContent = getFunctionContent(classMethod);
+    let isAbstractFunction = functionContent.length == 0;
+    let functionStatements = getFunctionStatements(functionContent, functionInput, classFields, imports);
 
     return {
         functionAccessLevel,
@@ -30,7 +30,7 @@ exports.parseFunction = function (classMethod, classFields, imports) {
 
 exports.postParseFunction = function(package, className, functions) {
 
-    var functionMap = functions.reduce((map, fun) => {
+    let functionMap = functions.reduce((map, fun) => {
         map[fun.functionName] = fun;
         return map;
     }, {});
@@ -51,7 +51,7 @@ exports.postParseFunction = function(package, className, functions) {
 
 function getFunctionStatements (functionContent, functionInput, classFields, imports) {
 
-    var parameters = {...classFields, ...functionInput};
+    let parameters = {...classFields, ...functionInput};
     
     return functionContent
         .map(statement => {
@@ -91,8 +91,8 @@ function dfsStatement (functionStatements, functionName, functionMap) {
         .map(statement => {
             
             if (typeof statement == 'string' && functionMap[statement] && statement != functionName) {
-                var subFunctionStatements = functionMap[statement].functionStatements;
-                var subFunctionName = functionMap[statement].functionName;
+                let subFunctionStatements = functionMap[statement].functionStatements;
+                let subFunctionName = functionMap[statement].functionName;
                 
                 return dfsStatement(subFunctionStatements, subFunctionName, functionMap);
             }

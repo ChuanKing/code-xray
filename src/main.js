@@ -30,8 +30,8 @@ const start = async function () {
 
 const processFile = async function (file) {
     try {
-        var data = await fs.readFile(file, 'utf8');
-        var classInfo = parseFile(data); 
+        let data = await fs.readFile(file, 'utf8');
+        let classInfo = parseFile(data); 
 
         // logObjectWithPrettyFormat(classInfo);
         // logClassBreif(classInfo, file);
